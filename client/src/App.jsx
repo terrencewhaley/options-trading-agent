@@ -46,6 +46,7 @@ export default function App() {
         "",
         `Decision: NO TRADE`,
         `Reason: ${trade.reason ?? "N/A"}`,
+        `Last Updated: ${new Date().toLocaleString()}`,
       ].join("\n");
     }
 

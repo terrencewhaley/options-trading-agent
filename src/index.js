@@ -10,6 +10,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://terrencewhaley.com",
   "https://www.terrencewhaley.com",
+  "https://options-trading-agent--options-trading-agent.us-east4.hosted.app",
+  "https://options-trading-agent.web.app",
 ];
 
 app.use(
