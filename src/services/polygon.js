@@ -1,0 +1,24 @@
+import axios from "axios";
+
+const BASE_URL = "https://api.polygon.io";
+
+export const getDailyCandles = async (ticker, limit = 60) => {
+  const url = `${BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${getFromDate(
+    limit
+  )}/${getToDate()}?adjusted=true&sort=asc&apiKey=${
+    process.env.POLYGON_API_KEY
+  }`;
+
+  const res = await axios.get(url);
+  return res.data.results;
+};
+
+const getToDate = () => {
+  return new Date().toISOString().split("T")[0];
+};
+
+const getFromDate = (days) => {
+  const d = new Date();
+  d.setDate(d.getDate() - days * 1.5); // buffer for weekends
+  return d.toISOString().split("T")[0];
+};
