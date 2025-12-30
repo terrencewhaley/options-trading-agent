@@ -5,6 +5,7 @@ export const getSpreadCredit = async (
   { underlying, exp, sellStrike, buyStrike },
   { tradierToken } = {}
 ) => {
+  console.log("QUOTE_PROVIDER =", process.env.QUOTE_PROVIDER);
   const provider = process.env.QUOTE_PROVIDER ?? "stub";
 
   if (provider === "stub") {
@@ -12,6 +13,7 @@ export const getSpreadCredit = async (
   }
 
   if (provider === "tradier") {
+    console.log("Using Tradier provider");
     const result = await getBullPutSpreadCreditTradier(
       {
         symbol: underlying,
