@@ -190,6 +190,7 @@ export default function App() {
                   <th className="py-2 pr-3">Profit</th>
                 </tr>
               </thead>
+
               <tbody className="text-neutral-100">
                 {runs.map((r) => {
                   const createdAt = r.createdAtMs
@@ -200,6 +201,7 @@ export default function App() {
                   const sell = r.trade?.sellStrike ?? "";
                   const buy = r.trade?.buyStrike ?? "";
                   const exp = r.trade?.exp ?? "";
+
                   const credit =
                     r.trade?.credit == null
                       ? ""
