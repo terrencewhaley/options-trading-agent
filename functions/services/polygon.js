@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const BASE_URL = "https://api.polygon.io";
+const apiKey = process.env.POLYGON_API_KEY;
 
 export const getDailyCandles = async (ticker, limit = 60) => {
   const url = `${BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${getFromDate(
     limit
-  )}/${getToDate()}?adjusted=true&sort=asc&apiKey=${
-    process.env.POLYGON_API_KEY
-  }`;
+  )}/${getToDate()}?adjusted=true&sort=asc&apiKey=${apiKey}`;
 
   const res = await axios.get(url);
   return res.data.results;
