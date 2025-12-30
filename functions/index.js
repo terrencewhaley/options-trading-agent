@@ -1,6 +1,7 @@
-import functions from "firebase-functions";
 import express from "express";
 import cors from "cors";
+import { onRequest } from "firebase-functions/v2/https";
+
 import analyzeRoute from "./routes/analyze.js";
 
 const app = express();
@@ -14,4 +15,5 @@ app.get("/", (req, res) => {
 
 app.use("/analyze", analyzeRoute);
 
-export const api = functions.https.onRequest(app);
+// 2nd gen functions
+export const api = onRequest(app);

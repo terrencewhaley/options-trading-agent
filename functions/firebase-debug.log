@@ -1,0 +1,86 @@
+[debug] [2025-12-30T01:27:26.752Z] ----------------------------------------------------------------------
+[debug] [2025-12-30T01:27:26.753Z] Command:       /Users/twhaley/.nvm/versions/node/v22.12.0/bin/node /Users/twhaley/.nvm/versions/node/v22.12.0/bin/firebase deploy
+[debug] [2025-12-30T01:27:26.754Z] CLI Version:   15.1.0
+[debug] [2025-12-30T01:27:26.754Z] Platform:      darwin
+[debug] [2025-12-30T01:27:26.754Z] Node Version:  v22.12.0
+[debug] [2025-12-30T01:27:26.754Z] Time:          Mon Dec 29 2025 17:27:26 GMT-0800 (Pacific Standard Time)
+[debug] [2025-12-30T01:27:26.754Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-30T01:27:27.210Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-30T01:27:27.210Z] > authorizing via signed-in user (terrence.venturing@gmail.com)
+[debug] [2025-12-30T01:27:27.210Z] [iam] checking project options-trading-agent for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-12-30T01:27:27.211Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.211Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.211Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent:testIamPermissions [none]
+[debug] [2025-12-30T01:27:27.211Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent:testIamPermissions x-goog-quota-user=projects/options-trading-agent
+[debug] [2025-12-30T01:27:27.211Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-12-30T01:27:27.374Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent:testIamPermissions 200
+[debug] [2025-12-30T01:27:27.374Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-12-30T01:27:27.374Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.374Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.374Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/options-trading-agent/serviceAccounts/options-trading-agent@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-12-30T01:27:27.374Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/options-trading-agent/serviceAccounts/options-trading-agent@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-12-30T01:27:27.726Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/options-trading-agent/serviceAccounts/options-trading-agent@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-12-30T01:27:27.727Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/options-trading-agent/serviceAccounts/options-trading-agent@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-12-30T01:27:27.728Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.728Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.728Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent [none]
+[debug] [2025-12-30T01:27:27.924Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent 200
+[debug] [2025-12-30T01:27:27.924Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent {"projectId":"options-trading-agent","projectNumber":"259718129876","displayName":"options-trading-agent","name":"projects/options-trading-agent","resources":{"hostingSite":"options-trading-agent"},"state":"ACTIVE","etag":"1_edbf5c2b-ac9a-423f-9fd4-2e0f0acdbca2"}
+[info] 
+[info] === Deploying to 'options-trading-agent'...
+[info] 
+[info] i  deploying functions, hosting 
+[debug] [2025-12-30T01:27:27.930Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.930Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:27.930Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent [none]
+[debug] [2025-12-30T01:27:28.061Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent 200
+[debug] [2025-12-30T01:27:28.061Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/options-trading-agent {"projectNumber":"259718129876","projectId":"options-trading-agent","lifecycleState":"ACTIVE","name":"options-trading-agent","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-12-29T19:59:05.675604Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-12-30T01:27:28.063Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:28.063Z] Checked if tokens are valid: true, expires at: 1767060935206
+[debug] [2025-12-30T01:27:28.063Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent/adminSdkConfig [none]
+[debug] [2025-12-30T01:27:28.190Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent/adminSdkConfig 200
+[debug] [2025-12-30T01:27:28.190Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/options-trading-agent/adminSdkConfig {"projectId":"options-trading-agent","storageBucket":"options-trading-agent.firebasestorage.app"}
+[debug] [2025-12-30T01:27:28.193Z] Validating nodejs source
+[debug] [2025-12-30T01:27:28.650Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "type": "module",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.2"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.4.1"
+  },
+  "private": true
+}
+[debug] [2025-12-30T01:27:28.650Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-12-30T01:27:28.651Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-12-30T01:27:28.655Z] Found firebase-functions binary at '/Users/twhaley/Desktop/coding/options-trading-agent/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8942
+
+[error] (node:3305) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[debug] [2025-12-30T01:27:28.878Z] Got response from /__/functions.yaml {"endpoints":{"api":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"api"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
