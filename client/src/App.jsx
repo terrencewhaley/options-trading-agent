@@ -7,14 +7,14 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [showJson, setShowJson] = useState(false);
 
-  const apiBase = import.meta.env.VITE_API_BASE_URL;
+  // const apiBase = import.meta.env.VITE_API_BASE_URL;
 
   const fetchAnalysis = async () => {
     setLoading(true);
     setErr("");
     try {
       const res = await fetch(
-        `${apiBase}/analyze?ticker=${encodeURIComponent(ticker)}`
+        `/api/analyze?ticker=${encodeURIComponent(ticker)}`
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
