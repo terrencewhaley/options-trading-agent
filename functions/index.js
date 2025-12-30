@@ -6,6 +6,7 @@ import { defineSecret } from "firebase-functions/params";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { runAnalysis } from "./logic/runAnalysis.js";
+import { settleOpenTrades } from "./logic/settleTrades.js";
 
 if (!getApps().length) initializeApp();
 
@@ -42,6 +43,18 @@ export const weeklyAgentRun = onSchedule(
     const tradierToken = TRADIER_TOKEN.value();
 
     await runAnalysis({ ticker }, { tradierToken });
+  }
+);
+
+export const weeklySettle = onSchedule(
+  {
+    schedule: "0 9 * * 6", // Saturday 9:00 AM
+    timeZone: "America/Los_Angeles",
+    secrets: [POLYGON_API_KEY], // only needs Polygon
+  },
+  async () => {
+    const result = await settleOpenTrades();
+    console.log("weeklySettle:", result);
   }
 );
 

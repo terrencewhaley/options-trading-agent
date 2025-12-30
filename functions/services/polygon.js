@@ -12,6 +12,14 @@ export const getDailyCandles = async (ticker, limit = 60) => {
   return res.data.results;
 };
 
+export const getDailyCloseOnDate = async (ticker, yyyyMmDd) => {
+  const url = `${BASE_URL}/v2/aggs/ticker/${ticker}/range/1/day/${yyyyMmDd}/${yyyyMmDd}?adjusted=true&sort=asc&apiKey=${apiKey}`;
+
+  const res = await axios.get(url);
+  const candle = res.data?.results?.[0];
+  return candle?.c ?? null; // close
+};
+
 const getToDate = () => {
   return new Date().toISOString().split("T")[0];
 };
