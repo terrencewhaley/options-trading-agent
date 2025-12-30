@@ -39,8 +39,8 @@ export const recommendTrade = ({
     };
   }
 
-  const width = config.spreadWidth;
-  const maxLoss = Number(((width - credit) * 100).toFixed(0));
+  const width = config.spreadWidth; // strike difference in dollars
+  const maxLoss = Number((width * 100 - credit).toFixed(0)); // credit is dollars per contract
 
   if (maxLoss > config.maxLossCap) {
     return {

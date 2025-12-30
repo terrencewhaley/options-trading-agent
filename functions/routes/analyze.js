@@ -5,6 +5,11 @@ import { getTrendBias } from "../logic/trendBias.js";
 import { detectSupport } from "../logic/support.js";
 import { recommendTrade } from "../logic/tradeRecommend.js";
 import { getSpreadCredit } from "../quotes/getSpreadCredit.js";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
+
+if (!getApps().length) initializeApp();
+const db = getFirestore();
 
 const router = express.Router();
 
@@ -60,6 +65,28 @@ router.get("/", async (req, res) => {
       credit,
     });
   }
+
+  const runDoc = {
+    createdAt: FieldValue.serverTimestamp(),
+    ticker,
+    close,
+    ema20,
+    ema50,
+    bias,
+    support: supportInfo.support,
+    supportSwingDate: supportInfo.swingDate,
+    supportRejections: supportInfo.rejectionCount,
+    supportRejectionDates: supportInfo.rejectionDates,
+    trade,
+    status: trade?.decision === "TRADE" ? "OPEN" : "NO_TRADE",
+    outcome: trade?.decision === "TRADE" ? { status: "PENDING" } : null,
+    meta: {
+      quoteProvider: process.env.QUOTE_PROVIDER ?? null,
+      tradierEnv: process.env.TRADIER_ENV ?? null,
+    },
+  };
+
+  await db.collection("agentRuns").add(runDoc);
 
   res.json({
     ticker,
