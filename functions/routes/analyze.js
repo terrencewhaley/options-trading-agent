@@ -40,12 +40,17 @@ router.get("/", async (req, res) => {
   let trade = draft;
 
   if (draft?.decision === "TRADE") {
-    const credit = await getSpreadCredit({
-      underlying: ticker,
-      exp: draft.exp,
-      sellStrike: draft.sellStrike,
-      buyStrike: draft.buyStrike,
-    });
+    const tradierToken = req.app?.locals?.tradierToken;
+
+    const credit = await getSpreadCredit(
+      {
+        underlying: ticker,
+        exp: draft.exp,
+        sellStrike: draft.sellStrike,
+        buyStrike: draft.buyStrike,
+      },
+      { tradierToken }
+    );
 
     trade = recommendTrade({
       bias,
