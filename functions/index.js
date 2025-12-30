@@ -3,6 +3,11 @@ import cors from "cors";
 import analyzeRoute from "./routes/analyze.js";
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import { initializeApp, getApps } from "firebase-admin/app";
+import { runAnalysis } from "./logic/runAnalysis.js";
+
+if (!getApps().length) initializeApp();
 
 const POLYGON_API_KEY = defineSecret("POLYGON_API_KEY");
 const TRADIER_TOKEN = defineSecret("TRADIER_TOKEN");
@@ -25,6 +30,20 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/analyze", analyzeRoute);
+
+export const weeklyAgentRun = onSchedule(
+  {
+    schedule: "0 10 * * 1", // Mondays 10:00
+    timeZone: "America/Los_Angeles",
+    secrets: [POLYGON_API_KEY, TRADIER_TOKEN],
+  },
+  async () => {
+    const ticker = "SPY";
+    const tradierToken = TRADIER_TOKEN.value();
+
+    await runAnalysis({ ticker }, { tradierToken });
+  }
+);
 
 export const api = onRequest(
   { secrets: [POLYGON_API_KEY, TRADIER_TOKEN] },
