@@ -7,6 +7,7 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { runAnalysis } from "./logic/runAnalysis.js";
 import { settleOpenTrades } from "./logic/settleTrades.js";
+import runsRoute from "./routes/runs.js";
 
 if (!getApps().length) initializeApp();
 
@@ -31,6 +32,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/analyze", analyzeRoute);
+
+app.use("/runs", runsRoute);
 
 export const weeklyAgentRun = onSchedule(
   {
