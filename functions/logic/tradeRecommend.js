@@ -1,11 +1,12 @@
 import { config } from "../config.js";
-import { getNextFridayExpiry } from "./expiry.js";
+import { getFridayExpiryInRange } from "./expiry.js";
 
 export const recommendTrade = ({
   bias,
   support,
   supportRejections,
-  credit = null,
+  premium = null, // dollars per contract (e.g., 75 means $75)
+  close = null, // underlying last close (optional; helps pick strike)
 }) => {
   if (bias !== "Bullish") {
     return { decision: "NO TRADE", reason: `Bias is ${bias}` };
@@ -18,46 +19,64 @@ export const recommendTrade = ({
     };
   }
 
-  // Sell strike below support (nearest whole-dollar below)
-  const sellStrike = Math.floor(support);
-  const buyStrike = sellStrike - config.spreadWidth;
+  // Expiration: first Friday within DTE range
+  const exp = getFridayExpiryInRange(config.minDte, config.maxDte);
 
-  const exp = getNextFridayExpiry();
+  // Strike selection:
+  // Prefer ATM-ish based on close if provided; otherwise fall back to support-rounded.
+  // Keep it simple and stable.
+  const ref = Number.isFinite(close) ? close : support;
+  const callStrike = Math.round(ref); // simplest ATM-ish selection
 
-  // If we don't have live credit yet, we still return the shape
-  if (credit == null) {
+  // If we don't have live premium yet, still return the shape
+  if (premium == null) {
     return {
       decision: "TRADE",
-      strategy: "Bull Put Credit Spread",
-      sellStrike,
-      buyStrike,
-      exp: exp,
-      credit: null,
+      strategy: "Long Call",
+      callStrike,
+      exp,
+      premium: null,
       maxLoss: null,
-      exit: "Close at $0.30–$0.40",
-      note: "Credit/maxLoss pending live options data",
+      exit: {
+        type: "PCT_OF_ENTRY",
+        takeProfitPct: config.takeProfitPct,
+        stopLossPct: config.stopLossPct,
+      },
+      note: "Premium/maxLoss pending live options data",
     };
   }
 
-  const width = config.spreadWidth; // strike difference in dollars
-  const maxLoss = Number((width * 100 - credit).toFixed(0)); // credit is dollars per contract
+  const prem = Number(premium);
 
-  if (maxLoss > config.maxLossCap) {
+  if (!Number.isFinite(prem) || prem <= 0) {
+    return { decision: "NO TRADE", reason: "Invalid premium returned" };
+  }
+
+  if (prem > config.maxPremiumCap) {
     return {
       decision: "NO TRADE",
-      reason: `Max loss $${maxLoss} exceeds cap $${config.maxLossCap}`,
-      proposed: { sellStrike, buyStrike, credit, maxLoss },
+      reason: `Premium $${prem.toFixed(0)} exceeds cap $${
+        config.maxPremiumCap
+      }`,
+      proposed: { callStrike, exp, premium: prem },
     };
   }
+  const takeProfitAt = Math.round(prem * (1 + config.takeProfitPct));
+  const stopLossAt = Math.round(prem * (1 - config.stopLossPct));
 
   return {
     decision: "TRADE",
-    strategy: "Bull Put Credit Spread",
-    sellStrike,
-    buyStrike,
-    exp: exp,
-    credit: Number(credit.toFixed(2)),
-    maxLoss,
-    exit: "Close at $0.30–$0.40",
+    strategy: "Long Call",
+    callStrike,
+    exp,
+    premium: Math.round(prem),
+    maxLoss: Math.round(prem),
+    exit: {
+      type: "PCT_OF_ENTRY",
+      takeProfitPct: config.takeProfitPct,
+      stopLossPct: config.stopLossPct,
+      takeProfitAt,
+      stopLossAt,
+    },
   };
 };

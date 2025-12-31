@@ -1,11 +1,5 @@
 import express from "express";
-import { getDailyCandles } from "../services/polygon.js";
-import { calculateEMA } from "../indicators/ema.js";
-import { getTrendBias } from "../logic/trendBias.js";
-import { detectSupport } from "../logic/support.js";
-import { recommendTrade } from "../logic/tradeRecommend.js";
-import { getSpreadCredit } from "../quotes/getSpreadCredit.js";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getFirestore } from "firebase-admin/firestore";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { runAnalysis } from "../logic/runAnalysis.js";
 

@@ -58,3 +58,59 @@ export const getOptionChain = async ({ symbol, expiration }, token) => {
 
   return Array.isArray(options) ? options : [options];
 };
+
+/**
+ * Long call premium using Tradier (read-only quotes).
+ * Conservative fill assumption:
+ *   premiumPerShare = callAsk
+ * Returns premium in DOLLARS per contract, e.g. 75 (means $75)
+ */
+export const getLongCallPremiumTradier = async (
+  { symbol, expiration, strike },
+  tradierToken
+) => {
+  if (!tradierToken) {
+    return { premium: null, leg: null, reason: "Missing TRADIER_TOKEN" };
+  }
+
+  const chain = await getOptionChain({ symbol, expiration }, tradierToken);
+
+  const callLeg = chain.find(
+    (o) => o.option_type === "call" && toNumber(o.strike) === toNumber(strike)
+  );
+
+  if (!callLeg) {
+    return {
+      premium: null,
+      leg: null,
+      reason: "Selected call strike not found in chain",
+    };
+  }
+
+  const ask = toNumber(callLeg.ask);
+  if (ask == null) {
+    return {
+      premium: null,
+      leg: {
+        strike,
+        bid: toNumber(callLeg.bid),
+        ask: toNumber(callLeg.ask),
+        symbol: callLeg.symbol,
+      },
+      reason: "Missing ask",
+    };
+  }
+
+  const premium = Math.round(ask * 100); // dollars per contract, whole dollars
+
+  return {
+    premium,
+    leg: {
+      strike,
+      bid: toNumber(callLeg.bid),
+      ask,
+      symbol: callLeg.symbol,
+    },
+    reason: null,
+  };
+};

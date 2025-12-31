@@ -3,7 +3,7 @@ import { calculateEMA } from "../indicators/ema.js";
 import { getTrendBias } from "../logic/trendBias.js";
 import { detectSupport } from "../logic/support.js";
 import { recommendTrade } from "../logic/tradeRecommend.js";
-import { getSpreadCredit } from "../quotes/getSpreadCredit.js";
+import { getCallPremium } from "../quotes/getCallPremium.js";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 export const runAnalysis = async (
@@ -28,18 +28,18 @@ export const runAnalysis = async (
     bias,
     support: supportInfo.support,
     supportRejections: supportRejectionsForDecision,
-    credit: null,
+    premium: null,
+    close,
   });
 
   let trade = draft;
 
   if (draft?.decision === "TRADE") {
-    const credit = await getSpreadCredit(
+    const premium = await getCallPremium(
       {
         underlying: ticker,
         exp: draft.exp,
-        sellStrike: draft.sellStrike,
-        buyStrike: draft.buyStrike,
+        callStrike: draft.callStrike,
       },
       { tradierToken }
     );
@@ -48,7 +48,8 @@ export const runAnalysis = async (
       bias,
       support: supportInfo.support,
       supportRejections: supportRejectionsForDecision,
-      credit,
+      premium,
+      close,
     });
   }
 

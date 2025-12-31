@@ -52,40 +52,39 @@ export default function App() {
       ].join("\n");
     }
 
-    const creditText =
-      trade.credit == null ? "pending" : `~$${Number(trade.credit).toFixed(2)}`;
+    const premiumText =
+      trade.premium == null
+        ? "pending"
+        : `~$${Number(trade.premium).toFixed(0)}`;
+
     const maxLossText =
-      trade.maxLoss == null ? "pending" : `~$${trade.maxLoss}`;
-    const width = Number(trade.sellStrike) - Number(trade.buyStrike);
-    const credit = Number(trade.credit ?? 0);
-    const maxLoss = Number(trade.maxLoss ?? 0);
-    const breakeven =
-      trade.credit == null ? null : Number(trade.sellStrike) - credit / 100;
-    const rr =
-      trade.credit == null || trade.maxLoss == null || maxLoss === 0
-        ? null
-        : credit / maxLoss;
+      trade.maxLoss == null
+        ? "pending"
+        : `~$${Number(trade.maxLoss).toFixed(0)}`;
+
+    const takeProfitAt = trade.exit?.takeProfitAt;
+    const stopLossAt = trade.exit?.stopLossAt;
 
     return [
       `Bias: ${bias}`,
       `Support: ~${support}`,
       "",
       `Suggested trade:`,
-      `Sell ${trade.sellStrike} / Buy ${trade.buyStrike} Put`,
+      `Buy ${ticker} ${trade.callStrike} Call`,
       `Exp: ${trade.exp}`,
-      `Credit: ${creditText}`,
+      `Premium (max loss): ${premiumText}`,
       `Max loss: ${maxLossText}`,
-      `Suggested exit: ${trade.exit ?? "Close at $0.30–$0.40"}`,
+      takeProfitAt == null
+        ? ""
+        : `Take profit at: ~$${Number(takeProfitAt).toFixed(0)}`,
+      stopLossAt == null
+        ? ""
+        : `Stop loss at: ~$${Number(stopLossAt).toFixed(0)}`,
       trade.note ? `Note: ${trade.note}` : "",
-      `Width: $${width}`,
-      breakeven == null ? "" : `Break-even (approx): ${breakeven.toFixed(2)}`,
-      trade.credit == null ? "" : `Max profit: ~$${credit.toFixed(2)}`,
-      trade.maxLoss == null ? "" : `Max loss: ~$${maxLoss.toFixed(0)}`,
-      rr == null ? "" : `R:R (credit/maxLoss): ${(rr * 100).toFixed(1)}%`,
     ]
       .filter(Boolean)
       .join("\n");
-  }, [data]);
+  }, [data, ticker]);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -95,7 +94,7 @@ export default function App() {
             Options Agent
           </h1>
           <p className="mt-1 text-sm text-neutral-400">
-            Decision support for a bullish put credit spread. You stay in
+            Decision support for a bullish long call (defined-risk). You stay in
             control.
           </p>
         </div>
@@ -163,7 +162,7 @@ export default function App() {
         <div className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-900/40 p-4">
           <div className="mb-2 flex items-center justify-between">
             <div className="text-xs uppercase tracking-wide text-neutral-500">
-              Run History (latest 50)
+              Run History (latest 50 runs)
             </div>
             {runsLoading ? (
               <div className="text-xs text-neutral-500">Loading…</div>
@@ -182,9 +181,10 @@ export default function App() {
                 <tr className="border-b border-neutral-800">
                   <th className="py-2 pr-3">Date</th>
                   <th className="py-2 pr-3">Status</th>
-                  <th className="py-2 pr-3">Sell/Buy</th>
+                  <th className="py-2 pr-3">Strategy</th>
+                  <th className="py-2 pr-3">Leg</th>
                   <th className="py-2 pr-3">Exp</th>
-                  <th className="py-2 pr-3">Credit</th>
+                  <th className="py-2 pr-3">Premium</th>
                   <th className="py-2 pr-3">MaxLoss</th>
                   <th className="py-2 pr-3">Outcome</th>
                   <th className="py-2 pr-3">Profit</th>
@@ -198,14 +198,29 @@ export default function App() {
                     : null;
 
                   const status = r.status ?? r.trade?.decision ?? "";
-                  const sell = r.trade?.sellStrike ?? "";
-                  const buy = r.trade?.buyStrike ?? "";
+                  const strategy = r.trade?.strategy ?? "";
                   const exp = r.trade?.exp ?? "";
 
-                  const credit =
-                    r.trade?.credit == null
-                      ? ""
-                      : `$${Number(r.trade.credit).toFixed(2)}`;
+                  // LEG display (supports both new Long Call + legacy spreads)
+                  const callStrike = r.trade?.callStrike;
+                  const sell = r.trade?.sellStrike;
+                  const buy = r.trade?.buyStrike;
+
+                  const leg =
+                    callStrike != null
+                      ? `C ${callStrike}`
+                      : sell != null && buy != null
+                      ? `P ${sell}/${buy}`
+                      : "";
+
+                  // Premium (new) or Credit (legacy)
+                  const premium =
+                    r.trade?.premium != null
+                      ? `$${Number(r.trade.premium).toFixed(0)}`
+                      : r.trade?.credit != null
+                      ? `$${Number(r.trade.credit).toFixed(2)}`
+                      : "";
+
                   const maxLoss =
                     r.trade?.maxLoss == null
                       ? ""
@@ -224,10 +239,12 @@ export default function App() {
                       </td>
                       <td className="py-2 pr-3 whitespace-nowrap">{status}</td>
                       <td className="py-2 pr-3 whitespace-nowrap">
-                        {sell !== "" && buy !== "" ? `${sell}/${buy}` : ""}
+                        {strategy}
                       </td>
+                      <td className="py-2 pr-3 whitespace-nowrap">{leg}</td>
                       <td className="py-2 pr-3 whitespace-nowrap">{exp}</td>
-                      <td className="py-2 pr-3 whitespace-nowrap">{credit}</td>
+                      <td className="py-2 pr-3 whitespace-nowrap">{premium}</td>
+
                       <td className="py-2 pr-3 whitespace-nowrap">{maxLoss}</td>
                       <td className="py-2 pr-3 whitespace-nowrap">{outcome}</td>
                       <td className="py-2 pr-3 whitespace-nowrap">{profit}</td>
@@ -237,7 +254,7 @@ export default function App() {
 
                 {!runsLoading && runs.length === 0 ? (
                   <tr>
-                    <td className="py-3 text-neutral-400" colSpan={8}>
+                    <td className="py-3 text-neutral-400" colSpan={9}>
                       No runs yet.
                     </td>
                   </tr>
