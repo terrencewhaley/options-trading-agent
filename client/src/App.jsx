@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAgentRuns } from "./hooks/useAgentRuns";
 
 export default function App() {
@@ -29,10 +29,10 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    fetchAnalysis();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   fetchAnalysis();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const formatted = useMemo(() => {
     if (!data) return "";
