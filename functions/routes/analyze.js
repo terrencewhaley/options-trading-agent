@@ -15,24 +15,32 @@ const db = getFirestore();
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const ticker = req.query.ticker ?? "SPY";
-  const minRejOverride = req.query.minRejections
-    ? Number(req.query.minRejections)
-    : null;
+  try {
+    const ticker = req.query.ticker ?? "SPY";
+    const minRejOverride = req.query.minRejections
+      ? Number(req.query.minRejections)
+      : null;
 
-  const tradierToken = req.app?.locals?.tradierToken;
+    const tradierToken = req.app?.locals?.tradierToken;
 
-  const payload = await runAnalysis(
-    {
-      ticker,
-      minRejectionsOverride: Number.isFinite(minRejOverride)
-        ? minRejOverride
-        : null,
-    },
-    { tradierToken }
-  );
+    const payload = await runAnalysis(
+      {
+        ticker,
+        minRejectionsOverride: Number.isFinite(minRejOverride)
+          ? minRejOverride
+          : null,
+      },
+      { tradierToken }
+    );
 
-  res.json(payload);
+    res.json(payload);
+  } catch (err) {
+    console.error("Analyze error:", err);
+    res.status(500).json({
+      error: err?.message ?? String(err),
+      stack: process.env.NODE_ENV === "production" ? undefined : err?.stack,
+    });
+  }
 });
 
 export default router;

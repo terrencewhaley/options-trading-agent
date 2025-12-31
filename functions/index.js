@@ -35,6 +35,11 @@ app.use("/analyze", analyzeRoute);
 
 app.use("/runs", runsRoute);
 
+app.use((err, _req, res, _next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: err?.message ?? "Internal Server Error" });
+});
+
 export const weeklyAgentRun = onSchedule(
   {
     schedule: "0 10 * * 1", // Mondays 10:00
