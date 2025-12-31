@@ -1,4 +1,4 @@
-import { getLongCallPremiumTradier } from "../services/tradier.js";
+import { getLongCallPremiumTradier } from "./providers/tradier.js";
 
 export const getCallPremium = async (
   { underlying, exp, callStrike },
